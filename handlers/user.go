@@ -8,7 +8,6 @@ import (
 )
 
 func CreateUser(c *gin.Context) {
-	db := database.InitDB()
 	var req models.User
 
 	if err := c.BindJSON(&req); err != nil {
@@ -16,7 +15,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	if err := db.Save(&req).Error; err != nil {
+	if err := database.DB.Save(&req).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "There was a problem saving the user."})
 		return
 	}
@@ -25,10 +24,9 @@ func CreateUser(c *gin.Context) {
 }
 
 func GetUsers(c *gin.Context) {
-	db := database.InitDB()
 	var users []models.User
 
-	if err := db.Find(&users).Error; err != nil {
+	if err := database.DB.Find(&users).Error; err != nil {
 		c.JSON(http.StatusPreconditionFailed, gin.H{"error": "there was a problem with the Database"})
 		return
 	}
@@ -37,7 +35,6 @@ func GetUsers(c *gin.Context) {
 }
 
 func EditUser(c *gin.Context) {
-	db := database.InitDB()
 	var req models.User
 
 	if err := c.BindJSON(&req); err != nil {
@@ -46,7 +43,7 @@ func EditUser(c *gin.Context) {
 	}
 
 	var user models.User
-	if err := db.First(&user, req.ID).Error; err != nil {
+	if err := database.DB.First(&user, req.ID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
@@ -54,7 +51,7 @@ func EditUser(c *gin.Context) {
 	user.Email = req.Email
 	user.Password = req.Password
 
-	if err := db.Save(&user).Error; err != nil {
+	if err := database.DB.Save(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "There was a problem updating the user"})
 		return
 	}
@@ -63,7 +60,6 @@ func EditUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	db := database.InitDB()
 	var req models.User
 
 	if err := c.BindJSON(&req); err != nil {
@@ -71,7 +67,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := db.Delete(&req).Error; err != nil {
+	if err := database.DB.Delete(&req).Error; err != nil {
 		c.JSON(http.StatusPreconditionFailed, gin.H{"error": "there was a problem deleting the User"})
 		return
 	}

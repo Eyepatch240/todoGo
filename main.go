@@ -10,9 +10,9 @@ import (
 
 func main() {
 	r := gin.Default()
-	db := database.InitDB()
+	database.DB = database.InitDB()
 
-	if err := db.AutoMigrate(
+	if err := database.DB.AutoMigrate(
 		&models.User{},
 		&models.TodoList{},
 		&models.Entry{},
@@ -27,5 +27,17 @@ func main() {
 		userOps.DELETE("", handlers.DeleteUser)
 		userOps.PUT("", handlers.EditUser)
 	}
+
+	listOps := r.Group("/todo")
+	{
+		listOps.POST("/get", handlers.GetLists)
+		listOps.POST("", handlers.CreateList)
+		listOps.DELETE("", handlers.DeleteList)
+		listOps.POST("/entry/get", handlers.GetEntries)
+		listOps.POST("/entry", handlers.CreateEntry)
+		listOps.DELETE("/entry", handlers.DeleteEntry)
+		listOps.PUT("/entry", handlers.UpdateEntry)
+	}
+
 	r.Run()
 }
