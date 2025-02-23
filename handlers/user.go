@@ -7,21 +7,6 @@ import (
 	"todoGo/models"
 )
 
-func CreateUser(c *gin.Context) {
-	var req models.User
-
-	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "There was a problem processing your request"})
-		return
-	}
-
-	if err := database.DB.Save(&req).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "There was a problem saving the user."})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "User saved successfully"})
-}
 
 func GetUsers(c *gin.Context) {
 	var users []models.User

@@ -16,6 +16,7 @@ func main() {
 		&models.User{},
 		&models.TodoList{},
 		&models.Entry{},
+		&models.RefreshToken{},
 	); err != nil {
 		log.Fatal("Failed to automigrate the db:", err)
 	}
@@ -23,7 +24,8 @@ func main() {
 	userOps := r.Group("/users")
 	{
 		userOps.GET("", handlers.GetUsers)
-		userOps.POST("", handlers.CreateUser)
+		userOps.POST("", handlers.Signup)
+		userOps.POST("/login", handlers.Login)
 		userOps.DELETE("", handlers.DeleteUser)
 		userOps.PUT("", handlers.EditUser)
 	}
